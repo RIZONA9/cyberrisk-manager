@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Incident response · CyberRisk Manager{% endblock %}
+{% block content %}
+<header><p class="eyebrow">RESPONSE LOG</p><h1>Incident response</h1><p class="muted">Open an incident to record an action or review its stage progress.</p></header>
+<section class="panel">
+  <h2>Response history</h2>
+  {% with actions=page.items, show_incident=true %}{% include "_response_table.html" %}{% endwith %}
+  {% if page.pages > 1 %}
+  <nav aria-label="Response history pages" class="d-flex gap-3">
+    {% if page.has_prev %}<a href="{{ url_for('responses.index', page=page.prev_num) }}">Previous</a>{% endif %}
+    <span>Page {{ page.page }} of {{ page.pages }}</span>
+    {% if page.has_next %}<a href="{{ url_for('responses.index', page=page.next_num) }}">Next</a>{% endif %}
+  </nav>
+  {% endif %}
+</section>
+<section class="panel"><h2>Academic reference</h2>
+  <p>The six stages expand the lifecycle in NIST SP 800-61 Rev. 2. The guide groups containment, eradication, and recovery in one phase and covers lessons learned under post-incident activity.</p>
+  <p class="mb-0">Rev. 2 is a historical reference. NIST superseded it with Rev. 3 in April 2025. <a href="https://csrc.nist.gov/pubs/sp/800/61/r2/final">NIST SP 800-61 Rev. 2</a> · <a href="https://csrc.nist.gov/pubs/sp/800/61/r3/final">Rev. 3</a></p>
+</section>
+{% endblock %}

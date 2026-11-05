@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Risk register · CyberRisk Manager{% endblock %}
+{% block content %}
+<header><p class="eyebrow">RISK MANAGEMENT</p><h1>Risk register</h1><p class="muted">Review assessed incidents, ownership, and current exposure.</p></header>
+<section class="panel">
+  <form method="get" class="row g-3 align-items-end mb-3">
+    <div class="col-md"><label class="form-label" for="q">Search title, description, or owner</label><input class="form-control" id="q" name="q" value="{{ q }}" maxlength="200"></div>
+    <div class="col-md"><label class="form-label" for="level">Current level</label><select class="form-select" id="level" name="level"><option value="">All levels</option>{% for item in levels %}<option {% if item == level %}selected{% endif %}>{{ item }}</option>{% endfor %}</select></div>
+    <div class="col-md"><label class="form-label" for="status">Risk status</label><select class="form-select" id="status" name="status"><option value="">All statuses</option>{% for item in statuses %}<option {% if item == status %}selected{% endif %}>{{ item }}</option>{% endfor %}</select></div>
+    <div class="col-md"><label class="form-label" for="sort">Sort by</label><select class="form-select" id="sort" name="sort">{% for value, label in [('score', 'Highest current score'), ('title', 'Title'), ('review', 'Next review date')] %}<option value="{{ value }}" {% if sort == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+    <div class="col-auto"><button class="btn btn-outline-info">Apply</button> <a class="btn btn-outline-secondary" href="{{ url_for('register.index') }}">Clear</a></div>
+  </form>
+  <div class="table-responsive"><table class="table align-middle">
+    <thead><tr><th scope="col">Risk</th><th scope="col">Incident</th><th scope="col">Initial</th><th scope="col">Residual</th><th scope="col">Owner</th><th scope="col">Review date</th><th scope="col">Status</th></tr></thead>
+    <tbody>{% for incident in page.items %}
+      {% set entry = incident.register_entry %}
+      <tr><td><a href="{{ url_for('register.detail', incident_id=incident.id) }}">RISK-{{ incident.id }} · {{ incident.title }}</a></td>
+      <td><a href="{{ url_for('incidents.detail', incident_id=incident.id) }}">INC-{{ incident.id }}</a></td>
+      {% for risk in [incident.initial_risk, incident.latest_residual_risk] %}
+      <td>{% if risk %}{{ risk.score }} <span class="badge level-{{ risk.level|lower }}">{{ risk.level }}</span>{% else %}—{% endif %}</td>
+      {% endfor %}
+      <td>{{ entry.owner if entry else 'Unassigned' }}</td><td>{{ entry.review_date if entry else '—' }}</td><td>{{ entry.status if entry else 'Open' }}</td></tr>
+    {% else %}<tr><td colspan="7">No matching risks.</td></tr>{% endfor %}</tbody>
+  </table></div>
+  {% if page.pages > 1 %}
+  <nav aria-label="Risk register pages" class="d-flex gap-3">
+    {% if page.has_prev %}<a href="{{ url_for('register.index', page=page.prev_num, q=q, level=level, status=status, sort=sort) }}">Previous</a>{% endif %}
+    <span>Page {{ page.page }} of {{ page.pages }}</span>
+    {% if page.has_next %}<a href="{{ url_for('register.index', page=page.next_num, q=q, level=level, status=status, sort=sort) }}">Next</a>{% endif %}
+  </nav>
+  {% endif %}
+</section>
+{% endblock %}

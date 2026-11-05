@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% from "_forms.html" import fields %}
+{% block title %}{{ heading }} · CyberRisk Manager{% endblock %}
+{% block content %}
+<header><p class="eyebrow">{{ label }}</p><h1>{{ heading }}</h1>{% if description %}<p class="muted">{{ description }}</p>{% endif %}</header>
+<form method="post" class="panel" {% if multipart %}enctype="multipart/form-data"{% endif %}>
+  {{ fields(form) }}
+  <button class="btn btn-primary">{{ submit }}</button>
+  <a class="btn btn-outline-secondary" href="{{ back }}">Cancel</a>
+</form>
+{% endblock %}

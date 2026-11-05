@@ -1,0 +1,2 @@
+{"id":"training-001","timestamp":"2026-10-15T10:00:00+00:00","rule":{"id":"5712","level":10,"description":"Training: repeated SSH authentication failures"},"agent":{"name":"lab-ssh-01"}}
+{"id":"training-002","timestamp":"2026-10-15T10:01:00+00:00","rule":{"id":"5710","level":5,"description":"Training: failed sign-in for an invalid user"},"agent":{"name":"lab-ssh-01"}}

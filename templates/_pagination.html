@@ -1,0 +1,9 @@
+{% macro links(page, endpoint, params={}) %}
+{% if page.pages > 1 %}
+<nav aria-label="Result pages" class="d-flex gap-3">
+  {% if page.has_prev %}<a href="{{ url_for(endpoint, page=page.prev_num, **params) }}">Previous</a>{% endif %}
+  <span>Page {{ page.page }} of {{ page.pages }}</span>
+  {% if page.has_next %}<a href="{{ url_for(endpoint, page=page.next_num, **params) }}">Next</a>{% endif %}
+</nav>
+{% endif %}
+{% endmacro %}

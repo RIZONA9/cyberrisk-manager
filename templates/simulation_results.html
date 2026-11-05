@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% from "_risk_comparison.html" import comparison %}
+{% block title %}SIM-{{ simulation.id }} · CyberRisk Manager{% endblock %}
+{% block content %}
+<header><p class="eyebrow">SIM-{{ simulation.id }} · EDUCATIONAL EXERCISE</p><h1>{{ simulation.scenario_type }}</h1><span class="badge">{{ simulation.status }}</span></header>
+<section class="panel">
+  <h2>Simulation report</h2>
+  <p>{{ simulation.result_summary or 'The simulation is waiting for its result.' }}</p>
+  <p class="muted">Start (UTC): {{ simulation.started_at or 'Pending' }} · End (UTC): {{ simulation.ended_at or 'Pending' }}</p>
+  {% if simulation.incident %}<a href="{{ url_for('incidents.detail', incident_id=simulation.incident_id) }}">View simulated incident INC-{{ simulation.incident_id }}</a>{% endif %}
+</section>
+{% if simulation.incident %}{{ comparison(simulation.incident.initial_risk, residual, 'Simulated residual risk') }}{% endif %}
+<section class="panel"><h2>Simulation timeline</h2>
+  <ol class="record-list">{% for event in simulation.events %}
+    <li><div><strong>{{ event.event_type }}</strong> · {{ event.status }}<br>{{ event.description }}</div><time>{{ event.occurred_at.strftime('%Y-%m-%d %H:%M:%S') }} UTC</time></li>
+  {% else %}<li>No events recorded.</li>{% endfor %}</ol>
+</section>
+<a class="btn btn-outline-info" href="{{ url_for('simulations.index') }}">Return to simulation lab</a>
+{% endblock %}

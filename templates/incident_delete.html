@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<header><h1>Delete incident?</h1></header>
+<section class="panel">
+  <p><strong>INC-{{ incident.id }} · {{ incident.title }}</strong></p>
+  <p>The incident will be removed from the active workspace. Its related records will be retained in the database.</p>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button class="btn btn-danger">Confirm deletion</button>
+    <a class="btn btn-outline-secondary" href="{{ url_for('incidents.detail', incident_id=incident.id) }}">Cancel</a>
+  </form>
+</section>
+{% endblock %}

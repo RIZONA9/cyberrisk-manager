@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% from "_forms.html" import fields %}
+{% block title %}Settings · CyberRisk Manager{% endblock %}
+{% block content %}
+<header><p class="eyebrow">WORKSPACE PREFERENCES</p><h1>Settings</h1></header>
+<div class="split">
+  <section class="panel">
+    <h2>Account and application</h2>
+    <dl>
+      <dt>Username</dt><dd>{{ current_user.username }}</dd>
+      <dt>Account created (UTC)</dt><dd>{{ current_user.created_at.strftime('%Y-%m-%d %H:%M') }}</dd>
+      <dt>Application</dt><dd>CyberRisk Manager · Incident Management &amp; Risk Assessment</dd>
+      <dt>Session profile</dt><dd>{{ 'HTTPS required for cookies' if secure_cookie else 'Local development HTTP' }}</dd>
+      <dt>Demo data command</dt><dd>{{ 'Available for academic demonstration' if allow_demo else 'Disabled for this environment' }}</dd>
+    </dl>
+  </section>
+  <form method="post" class="panel">
+    <h2>Change password</h2>
+    <p class="muted">Use at least 12 characters. Changing your password ends existing sessions.</p>
+    {{ fields(form) }}
+    <button class="btn btn-primary">Update password</button>
+  </form>
+</div>
+{% endblock %}

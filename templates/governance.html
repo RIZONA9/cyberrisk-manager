@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% from "_pagination.html" import links %}
+{% block title %}Risk approvals · CyberRisk Manager{% endblock %}
+{% block content %}
+<header><p class="eyebrow">GOVERNANCE</p><h1>Risk approvals</h1><p class="muted">Track requests to accept a specific risk assessment.</p></header>
+<section class="panel">
+  {% if current_user.role in ('admin', 'reviewer') %}<p><a href="{{ url_for('governance.events') }}">Open audit log</a></p>{% endif %}
+  <div class="table-responsive"><table class="table align-middle">
+    <thead><tr><th>Risk</th><th>Assessment</th><th>Reason</th><th>Decision</th><th>Review</th></tr></thead>
+    <tbody>{% for item in page.items %}<tr>
+      <td><a href="{{ url_for('incidents.detail', incident_id=item.incident_id) }}">RISK-{{ item.incident_id }} · {{ item.incident.title }}</a></td>
+      <td>#{{ item.assessment_id }}</td><td class="preserve-lines">{{ item.reason }}</td>
+      <td>{{ item.status }}{% if item.decision_reason %}<br><span class="muted">{{ item.decision_reason }}</span>{% endif %}</td>
+      <td>{% if current_user.role == 'admin' and item.status == 'Pending' and item.requested_by != current_user.id %}
+        <a href="{{ url_for('governance.review', request_id=item.id, decision='approve') }}">Approve</a> ·
+        <a href="{{ url_for('governance.review', request_id=item.id, decision='reject') }}">Reject</a>
+      {% else %}—{% endif %}</td>
+    </tr>{% else %}<tr><td colspan="5">No acceptance requests.</td></tr>{% endfor %}</tbody>
+  </table></div>
+  {{ links(page, 'governance.index') }}
+</section>
+{% endblock %}

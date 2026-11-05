@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% from "_pagination.html" import links %}
+{% block title %}Alert inbox · CyberRisk Manager{% endblock %}
+{% block content %}
+<header class="d-flex flex-wrap justify-content-between gap-3">
+  <div><p class="eyebrow">ALERT TRIAGE</p><h1>Alert inbox</h1><p class="muted">Review imported alerts and open incidents for events that require response.</p></div>
+  <div><a class="btn btn-primary" href="{{ url_for('alerts.upload') }}">Import Wazuh alerts</a></div>
+</header>
+<section class="panel">
+  <div class="d-flex gap-2 mb-3">{% for value, label in [('', 'All'), ('pending', 'Needs review'), ('linked', 'Linked to incident')] %}
+    <a class="btn btn-sm {{ 'btn-info' if scope == value else 'btn-outline-secondary' }}" href="{{ url_for('alerts.index', scope=value) }}">{{ label }}</a>
+  {% endfor %}</div>
+  <div class="table-responsive"><table class="table align-middle">
+    <thead><tr><th>Alert</th><th>Rule level</th><th>Agent</th><th>Source</th><th>Event time (UTC)</th><th>Review</th></tr></thead>
+    <tbody>{% for alert in page.items %}<tr>
+      <td><a href="{{ url_for('alerts.detail', alert_id=alert.id) }}">{{ alert.description }}</a></td>
+      <td>{{ alert.level }}/15</td><td>{{ alert.agent_name }}</td><td>{{ alert.source }}</td>
+      <td>{{ alert.occurred_at.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td>{{ 'INC-' ~ alert.incident_id if alert.incident_id else 'Needs review' }}</td>
+    </tr>{% else %}<tr><td colspan="6">No matching alerts.</td></tr>{% endfor %}</tbody>
+  </table></div>
+  {{ links(page, 'alerts.index', {'scope': scope}) }}
+</section>
+{% endblock %}

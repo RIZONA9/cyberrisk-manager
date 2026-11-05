@@ -1,0 +1,13 @@
+{% macro fields(form) %}
+  {{ form.hidden_tag() }}
+  {% for field in form if field.type not in ('CSRFTokenField', 'HiddenField') %}
+    <div class="mb-3">
+      {{ field.label(class="form-label") }}
+      {{ field(class=("form-select" if field.type == "SelectField" else "form-check-input ms-2" if field.type == "BooleanField" else "form-control") ~ (" is-invalid" if field.errors else ""), aria_describedby=field.id ~ "-errors" if field.errors else false) }}
+      {% if field.errors %}<div class="invalid-feedback" id="{{ field.id }}-errors">{{ field.errors|join(" ") }}</div>{% endif %}
+    </div>
+  {% endfor %}
+  {% for field in form if field.type == 'HiddenField' and field.errors %}
+    <div class="alert alert-danger">{{ field.errors|join(" ") }}</div>
+  {% endfor %}
+{% endmacro %}

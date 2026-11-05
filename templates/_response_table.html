@@ -1,0 +1,8 @@
+<div class="table-responsive"><table class="table align-middle">
+  <thead><tr>{% if show_incident %}<th scope="col">Incident</th>{% endif %}<th scope="col">Stage</th><th scope="col">Action</th><th scope="col">Responsible person</th><th scope="col">Time (UTC)</th></tr></thead>
+  <tbody>{% for action in actions %}
+    <tr>{% if show_incident %}<td><a href="{{ url_for('incidents.detail', incident_id=action.incident_id, _anchor='response') }}">INC-{{ action.incident_id }} · {{ action.incident.title }}</a></td>{% endif %}
+    <td>{{ action.stage }}</td><td><div class="preserve-lines">{{ action.description }}</div>{% if action.notes %}<p class="muted preserve-lines mb-0">{{ action.notes }}</p>{% endif %}</td>
+    <td>{{ action.responsible_person }}</td><td>{{ action.action_at.strftime('%Y-%m-%d %H:%M') }}</td></tr>
+  {% else %}<tr><td colspan="{{ 5 if show_incident else 4 }}">No response actions recorded.</td></tr>{% endfor %}</tbody>
+</table></div>

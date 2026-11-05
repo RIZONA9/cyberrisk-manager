@@ -1,0 +1,15 @@
+{% if assessments %}
+<section class="panel">
+  <h2>Assessment history</h2>
+  <div class="table-responsive"><table class="table align-middle">
+    <thead><tr><th scope="col">Assessment</th><th scope="col">Likelihood × impact</th><th scope="col">Score</th><th scope="col">Recorded (UTC)</th><th scope="col">Mitigation</th></tr></thead>
+    <tbody>{% for risk in assessments|reverse %}
+      <tr><td>{{ risk.kind }}</td><td>{{ risk.likelihood }} × {{ risk.impact }}</td><td>{{ risk.score }} <span class="badge level-{{ risk.level|lower }}">{{ risk.level }}</span></td>
+      <td>{{ risk.assessed_at.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td>{% if risk.mitigation_actions %}
+        <details><summary class="preserve-lines">{{ risk.mitigation_actions }}</summary><p class="preserve-lines mb-1">{{ risk.control_description or '' }}</p><p class="muted mb-1">{{ risk.responsible_person or '' }}{% if risk.mitigation_at %} · {{ risk.mitigation_at.strftime('%Y-%m-%d %H:%M') }} UTC{% endif %}</p><p class="preserve-lines mb-0">{{ risk.notes or '' }}</p></details>
+      {% else %}—{% endif %}</td></tr>
+    {% endfor %}</tbody>
+  </table></div>
+</section>
+{% endif %}

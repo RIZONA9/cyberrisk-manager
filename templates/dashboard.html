@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · CyberRisk Manager{% endblock %}
+{% block content %}
+<header><p class="eyebrow">OPERATIONS</p><h1>Security dashboard</h1><p class="muted">Incident activity and current exposure.</p></header>
+<p><a class="btn btn-outline-info" href="{{ url_for('dashboard.metrics') }}">Response metrics and targets</a></p>
+<section class="metrics" aria-label="Operational metrics">
+  {% for label, value in metrics.items() %}
+    <article class="panel metric"><span>{{ label }}</span><strong>{{ value }}</strong></article>
+  {% endfor %}
+</section>
+<section class="metrics" aria-label="Current risk counts">
+  {% for label, value in chart.risks.items() %}
+    <article class="panel metric"><span class="badge level-{{ label|lower }}">{{ label }} risks</span><strong>{{ value }}</strong></article>
+  {% endfor %}
+</section>
+<div class="split">
+  <section class="panel"><h2>Risk distribution</h2><p class="muted">Latest residual or initial assessment.</p><div class="chart"><canvas id="risk-chart" aria-label="{% for label, value in chart.risks.items() %}{{ label }} risks {{ value }}. {% endfor %}" role="img"></canvas></div></section>
+  <section class="panel"><h2>Incident status</h2><p class="muted">Incidents by workflow status.</p><div class="chart"><canvas id="status-chart" aria-label="{% for label, value in chart.statuses.items() %}{{ label }} incidents {{ value }}. {% endfor %}" role="img"></canvas></div></section>
+</div>
+<div class="split">
+  <section class="panel"><h2>Recent incidents</h2>
+    <ul class="record-list">{% for incident in recent %}<li><a href="{{ url_for('incidents.detail', incident_id=incident.id) }}">{{ incident.title }}</a> <span class="badge level-{{ incident.severity|lower }}">{{ incident.severity }}</span></li>{% else %}<li>No incidents recorded.</li>{% endfor %}</ul>
+  </section>
+  <section class="panel"><h2>Recent activity</h2>
+    <ul class="record-list activity-list">{% for entry in activity %}<li>{{ entry.label }} <time>{{ entry.at.strftime('%Y-%m-%d %H:%M') }} UTC</time></li>{% else %}<li>No activity recorded.</li>{% endfor %}</ul>
+  </section>
+</div>
+<script type="application/json" id="dashboard-data">{{ chart|tojson }}</script>
+{% endblock %}
+{% block scripts %}
+<script defer src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script>
+<script defer src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Reports · CyberRisk Manager{% endblock %}
+{% block content %}
+<header><p class="eyebrow">EXPORT CENTER</p><h1>Reports</h1><p class="muted">Download database-backed reports as a printable PDF or filterable Excel workbook.</p></header>
+<div class="split">
+  {% for slug, (title, _) in reports.items() %}
+  <section class="panel">
+    <h2>{{ title }}</h2>
+    <a class="btn btn-outline-info" href="{{ url_for('reports.download', slug=slug, extension='pdf') }}" aria-label="Download {{ title }} as PDF">PDF</a>
+    <a class="btn btn-outline-secondary" href="{{ url_for('reports.download', slug=slug, extension='xlsx') }}" aria-label="Download {{ title }} as Excel">Excel</a>
+  </section>
+  {% endfor %}
+</div>
+{% endblock %}

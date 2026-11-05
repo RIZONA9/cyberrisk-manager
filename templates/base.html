@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>{% block title %}CyberRisk Manager{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block styles %}{% endblock %}
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+{% set signed_in = not hide_session and current_user.is_authenticated %}
+<div class="shell {% if not signed_in %}signed-out{% endif %}">
+  {% if signed_in %}
+  <aside class="sidebar">
+    <a class="brand" href="{{ url_for('dashboard.index') }}"><b aria-hidden="true">CR</b> CyberRisk Manager</a>
+    <nav aria-label="Main navigation">
+      <p class="eyebrow">WORKSPACE</p>
+      <a href="{{ url_for('dashboard.index') }}" {% if request.blueprint == 'dashboard' %}aria-current="page"{% endif %}>Dashboard</a>
+      <a href="{{ url_for('assets.index') }}" {% if request.blueprint == 'assets' %}aria-current="page"{% endif %}>Assets</a>
+      <a href="{{ url_for('alerts.index') }}" {% if request.blueprint == 'alerts' %}aria-current="page"{% endif %}>Alert inbox</a>
+      <a href="{{ url_for('vulnerabilities.index') }}" {% if request.blueprint == 'vulnerabilities' %}aria-current="page"{% endif %}>Vulnerabilities</a>
+      <a href="{{ url_for('incidents.index') }}" {% if request.blueprint == 'incidents' %}aria-current="page"{% endif %}>Incidents</a>
+      <a href="{{ url_for('register.index') }}" {% if request.blueprint == 'register' %}aria-current="page"{% endif %}>Risk register</a>
+      <a href="{{ url_for('governance.index') }}" {% if request.blueprint == 'governance' %}aria-current="page"{% endif %}>Risk approvals</a>
+      <a href="{{ url_for('responses.index') }}" {% if request.blueprint == 'responses' %}aria-current="page"{% endif %}>Incident response</a>
+      <a href="{{ url_for('simulations.index') }}" {% if request.blueprint == 'simulations' %}aria-current="page"{% endif %}>Run simulation</a>
+      <a href="{{ url_for('reports.index') }}" {% if request.blueprint == 'reports' %}aria-current="page"{% endif %}>Reports</a>
+      <a href="{{ url_for('settings.index') }}" {% if request.blueprint == 'settings' %}aria-current="page"{% endif %}>Settings</a>
+    </nav>
+    <div class="session">
+      <span>{{ current_user.username }}</span>
+      <form action="{{ url_for('auth.logout') }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-outline-secondary btn-sm">Sign out</button>
+      </form>
+    </div>
+  </aside>
+  {% endif %}
+  <main id="main" class="workspace{% block workspace_class %}{% endblock %}">
+    {% block alerts %}{% include "_alerts.html" %}{% endblock %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+{% block scripts %}{% endblock %}
+</body>
+</html>

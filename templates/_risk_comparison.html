@@ -1,0 +1,19 @@
+{% macro comparison(initial, residual, residual_label='Latest residual risk') %}
+<div class="split">
+  {% for label, risk in [('Initial risk', initial), (residual_label, residual)] %}
+  <article class="panel metric">
+    <h2>{{ label }}</h2>
+    {% if risk %}
+      <strong>{{ risk.score }} / 25</strong>
+      <span class="badge level-{{ risk.level|lower }}">{{ risk.level }}</span>
+      <p class="muted mb-0">Likelihood {{ risk.likelihood }} × Impact {{ risk.impact }}</p>
+    {% else %}
+      <p class="muted mb-0">Awaiting assessment.</p>
+    {% endif %}
+  </article>
+  {% endfor %}
+</div>
+{% if initial and residual %}
+<p class="muted">Score change after mitigation: {{ "%+d"|format(residual.score - initial.score) }} points.</p>
+{% endif %}
+{% endmacro %}

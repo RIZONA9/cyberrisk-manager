@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% from "_forms.html" import fields %}
+{% from "_risk_comparison.html" import comparison %}
+{% block title %}RISK-{{ incident.id }} · CyberRisk Manager{% endblock %}
+{% block content %}
+<header><p class="eyebrow">RISK REGISTER · RISK-{{ incident.id }}</p><h1>{{ incident.title }}</h1><p class="preserve-lines">{{ incident.description }}</p><a href="{{ url_for('incidents.detail', incident_id=incident.id) }}">Open related incident INC-{{ incident.id }}</a></header>
+{{ comparison(incident.initial_risk, incident.latest_residual_risk) }}
+{% with assessments=incident.assessments %}{% include "_risk_history.html" %}{% endwith %}
+{% if current_user.role != 'reviewer' %}
+<form method="post" class="panel">
+  <h2>Ownership and review</h2>
+  {{ fields(form) }}
+  <button class="btn btn-primary">Save register entry</button>
+  <a class="btn btn-outline-secondary" href="{{ url_for('register.index') }}">Back to register</a>
+</form>
+{% if incident.register_entry and incident.register_entry.status != 'Accepted' %}
+<p><a class="btn btn-outline-info" href="{{ url_for('governance.request_acceptance', incident_id=incident.id) }}">Request risk acceptance</a></p>
+{% endif %}
+{% elif incident.register_entry %}
+<section class="panel"><h2>Ownership and review</h2><p>{{ incident.register_entry.owner }} · {{ incident.register_entry.review_date }} · {{ incident.register_entry.status }}</p></section>
+{% endif %}
+{% endblock %}

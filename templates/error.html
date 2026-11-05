@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} · CyberRisk Manager{% endblock %}
+{% block content %}
+<section class="panel">
+  <p class="eyebrow">REQUEST STATUS · {{ code }}</p>
+  <h1>{{ title }}</h1>
+  <p>{{ detail }}</p>
+  <a class="btn btn-outline-info" href="{{ url_for('dashboard.index') if signed_in else url_for('auth.login') }}">Return to workspace</a>
+</section>
+{% endblock %}

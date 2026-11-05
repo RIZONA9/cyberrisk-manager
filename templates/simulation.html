@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% from "_forms.html" import fields %}
+{% block title %}Run simulation · CyberRisk Manager{% endblock %}
+{% block content %}
+<header><p class="eyebrow">TRAINING LAB</p><h1>Run simulation</h1><p class="muted">Practice the full incident lifecycle with synthetic data inside the application.</p></header>
+<p><a class="btn btn-outline-info" href="{{ url_for('exercises.index') }}">Interactive exercises</a></p>
+<div class="split">
+  <section class="panel"><h2>Choose a scenario</h2>
+    <form method="post">{{ fields(form) }}
+      <p id="scenario-description" class="muted" aria-live="polite">{{ scenarios.get(form.scenario.data, scenarios.values()|first) }}</p>
+      <button class="btn btn-primary">Run simulation</button>
+    </form>
+  </section>
+  <section class="panel"><h2>Scenario guide</h2><dl class="mb-0">
+    {% for name, description in scenarios.items() %}<dt>{{ name }}</dt><dd>{{ description }}</dd>{% endfor %}
+  </dl></section>
+</div>
+<section class="panel"><h2>Recent runs</h2>
+  <ul class="record-list">{% for run in recent %}<li><a href="{{ url_for('simulations.detail', simulation_id=run.id) }}">SIM-{{ run.id }} · {{ run.scenario_type }}</a><span class="badge">{{ run.status }}</span></li>{% else %}<li>No simulations recorded.</li>{% endfor %}</ul>
+</section>
+<script type="application/json" id="scenario-data">{{ scenarios|tojson }}</script>
+{% endblock %}
+{% block scripts %}<script defer src="{{ url_for('static', filename='js/simulation.js') }}"></script>{% endblock %}

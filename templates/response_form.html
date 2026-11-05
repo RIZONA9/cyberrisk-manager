@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% from "_forms.html" import fields %}
+{% block title %}Record response · CyberRisk Manager{% endblock %}
+{% block content %}
+<header><p class="eyebrow">INC-{{ incident.id }} · RESPONSE</p><h1>Record response action</h1><p class="muted">{{ incident.title }}</p></header>
+<form method="post" class="panel">
+  {{ fields(form) }}
+  <button class="btn btn-primary">Save action</button>
+  <a class="btn btn-outline-secondary" href="{{ url_for('incidents.detail', incident_id=incident.id, _anchor='response') }}">Cancel</a>
+</form>
+{% endblock %}

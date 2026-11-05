@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% from "_pagination.html" import links %}
+{% block title %}Asset inventory · CyberRisk Manager{% endblock %}
+{% block content %}
+<header class="d-flex flex-wrap justify-content-between gap-3">
+  <div><p class="eyebrow">ASSET MANAGEMENT</p><h1>Asset inventory</h1><p class="muted">Track business criticality, ownership, and exposure.</p></div>
+  <div><a class="btn btn-primary" href="{{ url_for('assets.edit') }}">Add asset</a></div>
+</header>
+<section class="panel">
+  <form method="get" class="d-flex gap-2 align-items-end mb-3">
+    <div><label class="form-label" for="q">Search assets</label><input class="form-control" id="q" name="q" maxlength="200" value="{{ q }}"></div>
+    <button class="btn btn-outline-info">Search</button>
+  </form>
+  <div class="table-responsive"><table class="table align-middle">
+    <thead><tr><th>Asset</th><th>Type</th><th>Owner</th><th>Criticality</th><th>Environment</th><th>Exposure</th></tr></thead>
+    <tbody>{% for asset in page.items %}
+      <tr><td><a href="{{ url_for('assets.detail', asset_id=asset.id) }}">{{ asset.name }}</a><br><small class="muted">{{ asset.identifier }}</small></td><td>{{ asset.category }}</td><td>{{ asset.owner }}</td><td><span class="badge level-{{ asset.criticality|lower }}">{{ asset.criticality }}</span></td><td>{{ asset.environment }}</td><td>{{ 'Internet exposed' if asset.internet_exposed else 'Internal' }}</td></tr>
+    {% else %}<tr><td colspan="6">No matching assets.</td></tr>{% endfor %}</tbody>
+  </table></div>
+  {{ links(page, 'assets.index', {'q': q}) }}
+</section>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% from "_forms.html" import fields %}
+{% from "_pagination.html" import links %}
+{% block title %}Interactive exercises · CyberRisk Manager{% endblock %}
+{% block content %}
+<header><p class="eyebrow">TRAINING LAB</p><h1>Interactive exercises</h1><p class="muted">Practice decisions with synthetic evidence. Each decision changes the next checkpoint.</p></header>
+{% if current_user.role != 'reviewer' %}
+<form method="post" action="{{ url_for('exercises.start') }}" class="panel">
+  {{ fields(form) }}<button class="btn btn-primary">Start exercise</button>
+</form>
+{% endif %}
+<section class="panel"><h2>Your exercises</h2>
+  <ul class="record-list">{% for run in page.items %}<li><a href="{{ url_for('exercises.detail', run_id=run.id) }}">EX-{{ run.id }} · {{ run.scenario }}</a><span class="badge">{{ 'Completed' if run.ended_at else 'In progress' }}</span></li>{% else %}<li>No exercises started.</li>{% endfor %}</ul>
+  {{ links(page, 'exercises.index') }}
+</section>
+{% endblock %}

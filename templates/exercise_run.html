@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% from "_forms.html" import fields %}
+{% block title %}{{ run.scenario }} · CyberRisk Manager{% endblock %}
+{% block content %}
+<header><p class="eyebrow">EX-{{ run.id }} · SIMULATED TRAINING EXERCISE</p><h1>{{ run.scenario }}</h1></header>
+{% if checkpoint %}
+<section class="panel"><h2>Checkpoint {{ run.step + 1 }} of {{ total_steps }} · {{ checkpoint.title }}</h2><p>{{ evidence }}</p>
+  {% if run.decisions %}<p class="muted">Previous decision: {{ run.decisions[-1].feedback }}</p>{% endif %}
+  <form method="post">{{ fields(form) }}<button class="btn btn-primary">Submit decision</button></form>
+</section>
+{% else %}
+<section class="panel"><h2>Exercise results</h2><p><strong>{{ score }} / {{ maximum }}</strong> decision points · Evidence documented in {{ evidenced }} of {{ run.decisions|length }} decisions.</p>
+  <p class="muted">Decision times include time away between visits.</p>
+  <ol class="record-list">{% for decision in run.decisions %}<li><div><strong>{{ decision.choice }}</strong><br>{{ decision.feedback }}{% if decision.evidence %}<br><span class="preserve-lines">{{ decision.evidence }}</span>{% endif %}</div><span class="badge">{{ decision.points }}/2 · {{ decision.seconds }}s</span></li>{% endfor %}</ol>
+</section>
+{% endif %}
+<a href="{{ url_for('exercises.index') }}">Back to exercises</a>
+{% endblock %}

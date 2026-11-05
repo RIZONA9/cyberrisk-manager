@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Incidents · CyberRisk Manager{% endblock %}
+{% block content %}
+<header class="d-flex flex-wrap justify-content-between gap-3">
+  <div><p class="eyebrow">INCIDENT MANAGEMENT</p><h1>{{ 'Incident archive' if archived else 'Incidents' }}</h1><p class="muted">{{ 'Review retained incident records and history.' if archived else 'Search and manage security incidents.' }}</p></div>
+  <div>{% if archived %}<a class="btn btn-outline-info" href="{{ url_for('incidents.index') }}">Active incidents</a>{% else %}<a class="btn btn-outline-secondary" href="{{ url_for('incidents.index', scope='archive') }}">View archive</a> <a class="btn btn-primary" href="{{ url_for('incidents.create') }}">Create incident</a>{% endif %}</div>
+</header>
+<section class="panel">
+  <form method="get" class="row g-3 align-items-end mb-3">
+    {% if archived %}<input type="hidden" name="scope" value="archive">{% endif %}
+    <div class="col-md"><label class="form-label" for="q">Search incidents</label><input class="form-control" id="q" name="q" maxlength="200" value="{{ q }}"></div>
+    <div class="col-md"><label class="form-label" for="severity">Severity</label><select class="form-select" id="severity" name="severity"><option value="">All severities</option>{% for value in levels %}<option {% if value == severity %}selected{% endif %}>{{ value }}</option>{% endfor %}</select></div>
+    <div class="col-md"><label class="form-label" for="status">Status</label><select class="form-select" id="status" name="status"><option value="">All statuses</option>{% for value in statuses %}<option {% if value == status %}selected{% endif %}>{{ value }}</option>{% endfor %}</select></div>
+    <div class="col-auto"><button class="btn btn-outline-info">Filter</button> <a class="btn btn-outline-secondary" href="{{ url_for('incidents.index', scope='archive' if archived else none) }}">Clear</a></div>
+  </form>
+  <div class="table-responsive"><table class="table align-middle">
+    <thead><tr><th scope="col">ID</th><th scope="col">Incident</th><th scope="col">Type</th><th scope="col">Severity</th><th scope="col">Status</th><th scope="col">Detected (UTC)</th></tr></thead>
+    <tbody>{% for item in page.items %}
+      <tr><td>INC-{{ item.id }}</td><td><a href="{{ url_for('incidents.detail', incident_id=item.id) }}">{{ item.title }}</a></td><td>{{ item.incident_type }}</td><td><span class="badge level-{{ item.severity|lower }}">{{ item.severity }}</span></td><td>{{ item.status }}</td><td>{{ item.detected_at.strftime('%Y-%m-%d %H:%M') }}</td></tr>
+    {% else %}<tr><td colspan="6">No matching incidents.</td></tr>{% endfor %}</tbody>
+  </table></div>
+  {% if page.pages > 1 %}
+  <nav aria-label="Incident pages" class="d-flex gap-3">
+    {% if page.has_prev %}<a href="{{ url_for('incidents.index', page=page.prev_num, q=q, severity=severity, status=status, scope='archive' if archived else none) }}">Previous</a>{% endif %}
+    <span>Page {{ page.page }} of {{ page.pages }}</span>
+    {% if page.has_next %}<a href="{{ url_for('incidents.index', page=page.next_num, q=q, severity=severity, status=status, scope='archive' if archived else none) }}">Next</a>{% endif %}
+  </nav>
+  {% endif %}
+</section>
+{% endblock %}

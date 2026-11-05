@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% from "_forms.html" import fields %}
+{% block title %}{{ heading }} · CyberRisk Manager{% endblock %}
+{% block content %}
+<header><p class="eyebrow">INCIDENT MANAGEMENT</p><h1>{{ heading }}</h1></header>
+<form method="post" class="panel">
+  {{ fields(form) }}
+  <button class="btn btn-primary">Save incident</button>
+  <a class="btn btn-outline-secondary" href="{{ url_for('incidents.detail', incident_id=incident.id) if incident else url_for('incidents.index') }}">Cancel</a>
+</form>
+{% endblock %}

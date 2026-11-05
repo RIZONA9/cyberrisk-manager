@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Alert {{ alert.id }} · CyberRisk Manager{% endblock %}
+{% block content %}
+<header><p class="eyebrow">ALERT TRIAGE · WAZUH</p><h1>{{ alert.description }}</h1></header>
+<section class="panel">
+  <dl><dt>Source</dt><dd>{{ alert.source }}</dd><dt>Source alert ID</dt><dd>{{ alert.external_id }}</dd>
+    <dt>Rule and level</dt><dd>{{ alert.rule_id }} · {{ alert.level }}/15</dd>
+    <dt>Agent</dt><dd>{{ alert.agent_name }}</dd><dt>Event time (UTC)</dt><dd>{{ alert.occurred_at }}</dd>
+    <dt>Matched asset</dt><dd>{% if alert.asset %}<a href="{{ url_for('assets.detail', asset_id=alert.asset.id) }}">{{ alert.asset.name }}</a>{% else %}Unregistered asset{% endif %}</dd>
+  </dl>
+  {% if alert.incident_id %}
+  <a class="btn btn-outline-info" href="{{ url_for('incidents.detail', incident_id=alert.incident_id) }}">View incident INC-{{ alert.incident_id }}</a>
+  {% else %}
+  <form method="post" action="{{ url_for('alerts.convert', alert_id=alert.id) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button class="btn btn-primary">Create incident</button>
+  </form>
+  {% endif %}
+</section>
+<a href="{{ url_for('alerts.index') }}">Back to alert inbox</a>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% from "_forms.html" import fields %}
+{% block title %}{{ kind|title }} risk · CyberRisk Manager{% endblock %}
+{% block content %}
+<header><p class="eyebrow">INC-{{ incident.id }} · RISK ASSESSMENT</p><h1>{{ kind|title }} risk</h1><p class="muted">{{ incident.title }} · Enter likelihood and impact on a scale of 1 to 5.</p></header>
+<form method="post" class="panel">
+  {{ fields(form) }}
+  <button class="btn btn-primary">Record assessment</button>
+  <a class="btn btn-outline-secondary" href="{{ url_for('incidents.detail', incident_id=incident.id) }}">Cancel</a>
+</form>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Response metrics · CyberRisk Manager{% endblock %}
+{% block content %}
+<header><p class="eyebrow">OPERATIONS</p><h1>Response metrics</h1><p class="muted">Medians in hours with the number of cases that have usable timestamps. Detection starts at first observed activity. Containment and recovery start at detection.</p></header>
+<div class="split">
+  {% for origin, stats in groups.items() %}
+  <section class="panel">
+    <h2>{{ origin }} incidents</h2>
+    <p>{{ stats.total }} cases · {{ stats.overdue }} open and overdue · {{ stats.breached }} contained after target</p>
+    <div class="table-responsive"><table class="table mb-0">
+      <thead><tr><th>Milestone</th><th>Median hours</th><th>Sample size</th></tr></thead>
+      <tbody>{% for label, hours, count in stats.durations %}<tr><td>{{ label }}</td><td>{{ "%.2f"|format(hours) if hours is not none else '—' }}</td><td>{{ count }}</td></tr>{% endfor %}</tbody>
+    </table></div>
+  </section>
+  {% endfor %}
+</div>
+<section class="panel"><h2>Containment targets</h2><p class="mb-0">Local targets by incident severity: {% for severity, hours in targets.items() %}{{ severity }} {{ hours }}h{{ ', ' if not loop.last else '.' }}{% endfor %}</p></section>
+{% endblock %}

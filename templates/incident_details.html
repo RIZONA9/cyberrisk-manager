@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% from "_risk_comparison.html" import comparison %}
+{% block title %}INC-{{ incident.id }} · CyberRisk Manager{% endblock %}
+{% block content %}
+<header class="d-flex flex-wrap justify-content-between gap-3">
+  <div><p class="eyebrow">INC-{{ incident.id }} · {{ incident.incident_type }}</p><h1>{{ incident.title }}</h1><span class="badge level-{{ incident.severity|lower }}">{{ incident.severity }}</span> <span class="badge">{{ incident.status }}</span></div>
+  {% if incident.archived_at %}
+    <div><span class="badge">Archived · read-only</span> <a href="{{ url_for('incidents.index', scope='archive') }}">Back to archive</a></div>
+  {% else %}
+    <div><a class="btn btn-outline-info" href="{{ url_for('incidents.edit', incident_id=incident.id) }}">Edit incident</a> <a class="btn btn-outline-danger" href="{{ url_for('incidents.delete', incident_id=incident.id) }}">Delete</a></div>
+  {% endif %}
+</header>
+<div class="split">
+  <section class="panel"><h2>Incident details</h2><p class="preserve-lines">{{ incident.description }}</p>
+    {% if incident.asset %}<p><a href="{{ url_for('assets.detail', asset_id=incident.asset.id) }}">Asset profile · {{ incident.asset.name }}</a> <span class="badge level-{{ incident.asset.criticality|lower }}">{{ incident.asset.criticality }} criticality</span></p>{% endif %}
+    {% if alert %}<p><a href="{{ url_for('alerts.detail', alert_id=alert.id) }}">Source alert · {{ alert.source }} / {{ alert.external_id }}</a></p>{% endif %}
+    <dl><dt>Affected asset</dt><dd>{{ incident.affected_asset }}</dd><dt>Reported by</dt><dd>{{ incident.reported_by }}</dd><dt>Assigned to</dt><dd>{{ incident.assigned_to or 'Unassigned' }}</dd><dt>Detected (UTC)</dt><dd>{{ incident.detected_at.strftime('%Y-%m-%d %H:%M') }}</dd><dt>Resolution notes</dt><dd class="preserve-lines">{{ incident.resolution_notes or 'No resolution notes.' }}</dd></dl>
+  </section>
+  <section class="panel"><h2>Incident history</h2><ul class="record-list">
+    {% for entry in incident.history %}<li><div><strong>{{ entry.event }}</strong> · {{ entry.actor }}<br>{{ entry.details }}</div><time>{{ entry.occurred_at.strftime('%Y-%m-%d %H:%M') }} UTC</time></li>{% else %}<li>No manual changes recorded.</li>{% endfor %}
+  </ul></section>
+</div>
+<section aria-labelledby="risk-title">
+  <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center mb-3">
+    <h2 id="risk-title" class="mb-0">Risk assessment</h2>
+    {% set kind = 'residual' if incident.initial_risk else 'initial' %}
+    {% if not incident.archived_at %}<a class="btn btn-outline-info" href="{{ url_for('risks.assess', incident_id=incident.id, kind=kind) }}">Record {{ kind }} risk</a>{% endif %}
+  </div>
+  {{ comparison(incident.initial_risk, incident.latest_residual_risk) }}
+  {% if incident.initial_risk and not incident.archived_at %}<p><a href="{{ url_for('register.detail', incident_id=incident.id) }}">Open risk register entry</a></p>{% endif %}
+  {% with assessments=incident.assessments %}{% include "_risk_history.html" %}{% endwith %}
+</section>
+<section id="response" class="panel">
+  <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Incident response</h2>
+    {% if not incident.archived_at %}<a class="btn btn-outline-info" href="{{ url_for('responses.add', incident_id=incident.id) }}">Record response action</a>{% endif %}
+  </div>
+  <p>{{ recorded_stages|length }} of {{ stages|length }} stages recorded.</p>
+  <ol class="d-flex flex-wrap gap-2 list-unstyled">
+    {% for stage in stages %}<li class="badge {{ 'level-low' if stage in recorded_stages else '' }}">{{ stage }} · {{ 'Recorded' if stage in recorded_stages else 'Pending' }}</li>{% endfor %}
+  </ol>
+  {% with actions=incident.response_actions, show_incident=false %}{% include "_response_table.html" %}{% endwith %}
+</section>
+{% endblock %}

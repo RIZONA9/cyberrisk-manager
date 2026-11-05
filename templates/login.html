@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% from "_forms.html" import fields %}
+{% block title %}Sign in · CyberRisk Manager{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">{% endblock %}
+{% block workspace_class %} login-workspace{% endblock %}
+{% block alerts %}{% endblock %}
+{% block content %}
+<div class="login-layout">
+  <section class="login-overview" aria-label="CyberRisk Manager">
+    <div class="login-brand">
+      <span class="login-emblem" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M12 3 20 6v5c0 4.6-3.1 8.3-8 10-4.9-1.7-8-5.4-8-10V6l8-3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="m8.5 12 2.2 2.2 4.8-4.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span>CyberRisk Manager</span>
+    </div>
+    <div class="login-intro">
+      <p class="eyebrow">SECURITY OPERATIONS</p>
+      <h2>Manage incidents.<br><span>Measure risk.</span></h2>
+      <p>Assess exposure, record response actions, and rehearse the incident lifecycle in one workspace.</p>
+    </div>
+    <svg class="login-diagram" viewBox="0 0 416 166" fill="none" aria-hidden="true">
+      <path d="M208 3v160M28 83h360M127 25l162 116m0-116L127 141" stroke="#306775" stroke-dasharray="3 6"/>
+      <ellipse cx="208" cy="83" rx="142" ry="64" stroke="#26545e"/>
+      <ellipse cx="208" cy="83" rx="102" ry="50" stroke="#377382"/>
+      <ellipse cx="208" cy="83" rx="63" ry="37" stroke="#468f99"/>
+      <path d="M66 83h78l27-25m179 25h-78l-27 25M208 19v34m0 60v34" stroke="#67c9c5" stroke-opacity=".65"/>
+      <circle cx="66" cy="83" r="4" fill="#77e5d7"/>
+      <circle cx="350" cy="83" r="4" fill="#77e5d7"/>
+      <circle cx="127" cy="25" r="3" fill="#78b7d5"/>
+      <circle cx="289" cy="141" r="3" fill="#78b7d5"/>
+      <path d="m208 53 27 10v18c0 15-10 27-27 33-17-6-27-18-27-33V63l27-10Z" fill="#143c46" stroke="#7ce7da" stroke-width="1.5"/>
+      <path d="m196 83 8 8 16-17" stroke="#8bf0e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div class="login-capabilities" aria-label="Workspace capabilities">
+      <span>Incident response</span><span>Risk register</span><span>Simulations</span>
+    </div>
+  </section>
+
+  <section class="login-access" aria-labelledby="login-title">
+    <div class="login-form-wrap">
+      <p class="login-label">WORKSPACE ACCESS</p>
+      <h1 id="login-title">Sign in</h1>
+      <p class="login-description">Enter your account details to open the dashboard.</p>
+      {% include "_alerts.html" %}
+      <form method="post">
+        {{ fields(form) }}
+        <button class="btn login-submit" type="submit">Sign in <span aria-hidden="true">→</span></button>
+      </form>
+    </div>
+  </section>
+</div>
+{% endblock %}

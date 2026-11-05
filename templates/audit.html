@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% from "_pagination.html" import links %}
+{% block title %}Audit log · CyberRisk Manager{% endblock %}
+{% block content %}
+<header><p class="eyebrow">GOVERNANCE</p><h1>Audit log</h1></header>
+<section class="panel">
+  <div class="table-responsive"><table class="table align-middle">
+    <thead><tr><th>Time (UTC)</th><th>Actor</th><th>Action</th><th>Record</th><th>Before → after</th><th>Reason</th></tr></thead>
+    <tbody>{% for item in page.items %}<tr>
+      <td>{{ item.occurred_at.strftime('%Y-%m-%d %H:%M') }}</td><td>{{ item.actor }}</td>
+      <td>{{ item.action }}</td><td>{{ item.target }}</td><td>{{ item.before or '—' }} → {{ item.after or '—' }}</td>
+      <td>{{ item.reason or '—' }}</td>
+    </tr>{% else %}<tr><td colspan="6">No audit entries recorded.</td></tr>{% endfor %}</tbody>
+  </table></div>
+  {{ links(page, 'governance.events') }}
+</section>
+{% endblock %}
